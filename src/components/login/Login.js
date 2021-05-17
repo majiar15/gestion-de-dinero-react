@@ -1,16 +1,18 @@
 import React from "react";
 import './login.css';
+import {Link} from 'react-router-dom';
 export const Login = () => {
   return (
-    <div class="login-page">
-      <div class="form">
+    <div className="login-page">
+      <div className="form">
      
-        <form class="login-form">
+        <form className="login-form">
           <input type="email" placeholder="Email" />
           <input type="password" placeholder="Password" />
           <button>Entrar</button>
-          <p class="message">
-            No estas registrado? <span>Crear cuenta</span>
+          <p className="message">
+            No estas registrado? <Link to="/register">Crear cuenta</Link>
+            
           </p>
         </form> 
       </div>
