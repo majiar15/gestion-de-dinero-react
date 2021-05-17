@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import '../login/login.css';
-import {Link} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import { useForm } from "../../hooks/useForm";
 import Alert from '@material-ui/lab/Alert';
 import axios from 'axios';
+import { getUser } from "../../utils/helper";
 export const Register = () => {
-    
+  const history = useHistory();
+  if(getUser() != null){
+    history.replace('/');
+  }
     const [error, setError] = useState({error:false, message: ''});
     const [register, setRegister] = useState(false);
     const [formValues, handleInputChange] = useForm({
@@ -18,12 +22,12 @@ export const Register = () => {
     const {nombre, apellidos, email, confirmpassword, password} = formValues;
     const handleInputSubmit = async (e) =>{
         e.preventDefault();
-        let response;
+    
         if(!nombre || !apellidos || !email || !confirmpassword || !password){
           setError({error: true, message:"llene todos los campos"});
         } else if (password === confirmpassword) {
           try {
-            response = await axios.post(`http://localhost:3000/api/auth/register`,{
+            await axios.post(`http://localhost:3000/api/auth/register`,{
               "nombre": nombre,
               "apellidos": apellidos,
               "email": email,

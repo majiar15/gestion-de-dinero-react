@@ -1,13 +1,12 @@
 import React from "react";
-import {  Redirect, Route, Switch } from "react-router-dom";
+import {  Redirect, Route, Switch, useHistory } from "react-router-dom";
 import { Carteras } from "../components/carteras/Carteras";
+import { getUser } from "../utils/helper";
 
 export const DashboardRoutes = () => {
-    const token = sessionStorage.getItem('token');
-
-    if(token === null){
-            return (<Redirect to="/login" />);
-        
+    const history = useHistory();
+    if(getUser() === null){
+      history.replace('/login');
     }
 
   return (
