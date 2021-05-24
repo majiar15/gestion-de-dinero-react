@@ -80,6 +80,11 @@ export const Retiros = () => {
                 </>
                 : 'no hay carteras '
             }
+            {
+                retirar !== ''
+                ? <h2>valor a depositar: ${Intl.NumberFormat('es-CO').format(retirar)}</h2>
+                : ''
+            }
             <form onSubmit={handleFormSubmit}>
             <TextField 
                 id="outlined-basic" 

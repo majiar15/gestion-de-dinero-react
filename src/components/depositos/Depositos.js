@@ -25,10 +25,10 @@ export const Depositos = () => {
     };
 
     const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-        return;
-    }
-    setOpen({error: false, message : '', severity: 'success'});
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen({open: false, message : '', severity: ''});
     };
     const getFecha = () =>{
         const date = new Date();
@@ -44,26 +44,34 @@ export const Depositos = () => {
                 fecha: getFecha()
             });
             cartera.cantidad = response.data.cantidad;
-            formValue.retirar = '';
+            formValue.deposito = '';
             formValue.mensaje = '';
             setOpen({open:true, message: "Deposito exitoso",severity:"success"});
         } catch (error) {
-            setOpen({error: true, message : 'fallo en la actualizacion del valor', severity: 'error'});
+            setOpen({open: true, message : 'fallo en la actualizacion del valor', severity: 'error'});
         }
     };
 
     const handleFormSubmit = (e)=>{
-        e.preventDefault();     
+        e.preventDefault();   
+        console.log(deposito)  
         const depositoString = parseInt(deposito).toString();
-       
+        if(deposito === ''){
+            
+            setOpen({open: true, message : 'el campo deposito es obligatorio', severity: 'error'});
+        }else if(deposito.length !== depositoString.length){
+            setOpen({open: true, message : 'el campo deposito debe tener solo numeros', severity: 'error'});
+        }else{
             depositofn(); 
-      
-
+        }
     };
 
     useEffect(() => {
         getCartera();
     }, []);
+    const handleInputBlur =(e)=>{
+        e.target.value = Intl.NumberFormat().format(e.target.value);
+    }
 
     return (
         <>
@@ -75,19 +83,23 @@ export const Depositos = () => {
                 </>
                 : 'no hay carteras '
             }
+            {
+                deposito !== ''
+                ? <h2>valor a depositar: ${Intl.NumberFormat('es-CO').format(deposito)}</h2>
+                : ''
+            }
             <form onSubmit={handleFormSubmit}>
             <TextField 
                 id="outlined-basic" 
-                label="Valor a depositar" 
+                type="number"
                 variant="outlined" 
                 name="deposito"
                 onChange={handleInputChange}
+                onBlur={handleInputBlur}
                 value={deposito}
-                
             />
             <TextField 
                 id="outlined-basic" 
-                label="mensaje" 
                 variant="outlined" 
                 name="mensaje"
                 onChange={handleInputChange}

@@ -1,3 +1,19 @@
 .card{
     margin:5px;
+    padding-bottom: 30PX;
+}
+.PR{
+    position: relative;
+}
+.PA{
+    position: absolute;
+}
+.possition{
+    bottom: -10px;
+}
+.FAleft{
+    left: 0px;
+}
+.FARigth{
+    right: 0px;
 }

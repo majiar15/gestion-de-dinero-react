@@ -20,7 +20,6 @@ export const Carteras = () => {
   }
   useEffect(() => {
     getCarteras();
-    console.log(carteras);
   }, []);
   return (
     <Grid
