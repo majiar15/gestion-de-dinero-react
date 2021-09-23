@@ -22,13 +22,13 @@ export const CardCartera = ({cartera}) => {
   })
   const history = useHistory();
     const handleButtonRetiro = ()=>{
-     history.push(`/retiro/${cartera._id}`);
+     history.push(`/retiro/${cartera.id}`);
     };
     const handleButtonDeposito = ()=>{
-      history.push(`/deposito/${cartera._id}`);
+      history.push(`/deposito/${cartera.id}`);
      };
     const handleButtonHistory = ()=>{
-      history.push(`/historial/${cartera._id}`);
+      history.push(`/historial/${cartera.id}`);
     };
      const [open, setOpen] = useState(false);
     return (

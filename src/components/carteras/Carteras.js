@@ -3,6 +3,7 @@ import {CardCartera} from '../card/Card';
 
 import { Grid } from "@material-ui/core";
 import axios from "axios";
+import { getToken } from "../../utils/helper";
 
 export const Carteras = () => {
   const [carteras, setCarteras] = useState([]);
@@ -12,8 +13,14 @@ export const Carteras = () => {
 
   const getCarteras = async ()=>{
     try {
-      const response = await axios.get('http://localhost:3000/api/cartera/user/'+id);
-      setCarteras(response.data.carteras);
+      const response = await axios.get(`${process.env.REACT_APP_URL_BASE}/cartera/get/${id}`,{
+        headers : {
+          'Content-Type' : 'application/json',
+          'Accept' : 'application/json',
+          'Authorization': 'Bearer '+getToken(),
+        },
+      });
+      setCarteras(response.data);
     } catch (error) {
       if(error.response.status === 404){
         setCarteras([]);
@@ -26,6 +33,7 @@ export const Carteras = () => {
     getCarteras();
   }, []);
   return (
+    // <h1>jejje</h1>
     <Grid
     container
     wrap="wrap"
@@ -35,7 +43,7 @@ export const Carteras = () => {
   >
     {
       carteras.length !== 0 
-      ? carteras.map( cartera => <CardCartera key={cartera._id} cartera={cartera}/>)
+      ? carteras.map( cartera => <CardCartera key={cartera.id} cartera={cartera}/>)
       : 'No hay carteras, cree una'
     }
     

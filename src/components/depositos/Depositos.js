@@ -4,6 +4,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router';
 import { useForm } from '../../hooks/useForm';
+import { getToken } from '../../utils/helper';
 
 export const Depositos = () => {
     const { id } = useParams();
@@ -13,8 +14,15 @@ export const Depositos = () => {
     let {deposito, mensaje} = formValue;
     const getCartera = async ()=>{
         try {
-          const response = await axios.get(`http://localhost:3000/api/cartera/${id}`);
-          setCartera(response.data.cartera);
+          const response = await axios.get(`${process.env.REACT_APP_URL_BASE}/cartera/${id}`,{
+            headers : {
+                'Content-Type' : 'application/json',
+                'Accept' : 'application/json',
+                'Authorization': 'Bearer '+getToken(),
+            },
+          });
+
+          setCartera(response.data);
         } catch (error) {
           if(error.response.status === 404){
             setCartera(null);
@@ -37,17 +45,35 @@ export const Depositos = () => {
     };
     const depositofn = async ()=>{
         try {
-            const  response = await axios.post('http://localhost:3000/api/cartera/deposit',{
-                id: cartera._id,
-                cantidad: parseInt(deposito),
-                mensaje: mensaje,
-                fecha: getFecha()
-            });
-            cartera.cantidad = response.data.cantidad;
+            let data;
+            if(mensaje == ""){
+                data = {
+                    id: cartera.id,
+                    cantidad: parseInt(deposito),
+                }
+            }else{
+                data = {
+                    id: cartera.id,
+                    cantidad: parseInt(deposito),
+                    mensaje: mensaje,
+                }
+            }
+            const  response = await axios.put(`${process.env.REACT_APP_URL_BASE}/cartera/deposit`,data,{
+                headers : {
+                    'Content-Type' : 'application/json',
+                    'Accept' : 'application/json',
+                    'Authorization': 'Bearer '+getToken(),
+                    'X-Requested-With' : 'XMLHttpRequest'
+                },
+            }
+            );
+            console.log(response.data)
+            cartera.cantidad = response.data.cartera.cantidad;
             formValue.deposito = '';
             formValue.mensaje = '';
             setOpen({open:true, message: "Deposito exitoso",severity:"success"});
         } catch (error) {
+            console.log(error);
             setOpen({open: true, message : 'fallo en la actualizacion del valor', severity: 'error'});
         }
     };
@@ -78,7 +104,7 @@ export const Depositos = () => {
             {
                 cartera != null 
                 ? <>
-                    <h1>Cartera : {cartera.nombre}</h1>
+                    <h1>Cartera : {cartera.name}</h1>
                     <h2>Saldo : {Intl.NumberFormat().format(cartera.cantidad)}</h2>
                 </>
                 : 'no hay carteras '
