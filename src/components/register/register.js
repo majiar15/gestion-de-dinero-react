@@ -27,9 +27,9 @@ export const Register = () => {
           setError({error: true, message:"llene todos los campos"});
         } else if (password === confirmpassword) {
           try {
-            await axios.post(`http://localhost:3000/api/auth/register`,{
-              "nombre": nombre,
-              "apellidos": apellidos,
+            await axios.post(`${process.env.REACT_APP_URL_BASE}/auth/register`,{
+              "name": nombre,
+              "last_name": apellidos,
               "email": email,
               "password": password,
               "confirmpassword": confirmpassword

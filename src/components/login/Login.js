@@ -23,13 +23,21 @@ export const Login = () => {
       setError({error: true, message: "llene todos los campos"});
     }else{
       try {
-        const response = await axios.post(`http://localhost:3000/api/auth/login`,{
+        const response = await axios.post(`${process.env.REACT_APP_URL_BASE}/auth/login`,{
           "email": email,
           "password": password
+      },{
+        headers : {
+          'Content-Type' : 'application/json',
+          'Accept' : 'application/json',
+        }
       });
-      setUserSession(response.data.token, response.data.user);
-      history.replace('/');
+      if(response.data.token !== undefined && response.data.user !== undefined){
+        setUserSession(response.data.token, response.data.user);
+        history.replace('/');
+      }
       } catch (error) {
+        console.log(error);
         if(error.response.status === 400){
           setError({error: true, message: "usuario o contraseña incorrectos"});
         }else{

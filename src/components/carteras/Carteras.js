@@ -6,9 +6,13 @@ import axios from "axios";
 
 export const Carteras = () => {
   const [carteras, setCarteras] = useState([]);
+  const {id} = JSON.parse(sessionStorage.getItem("user"));
+  console.log(id)
+
+
   const getCarteras = async ()=>{
     try {
-      const response = await axios.get('http://localhost:3000/api/cartera');
+      const response = await axios.get('http://localhost:3000/api/cartera/user/'+id);
       setCarteras(response.data.carteras);
     } catch (error) {
       if(error.response.status === 404){
