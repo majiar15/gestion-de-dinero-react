@@ -4,6 +4,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router';
 import { useForm } from '../../hooks/useForm';
+import { getToken } from '../../utils/helper';
 
 export const Retiros = () => {
     const { id } = useParams();
@@ -13,9 +14,16 @@ export const Retiros = () => {
     let {retirar, mensaje} = formValue;
     const getCartera = async ()=>{
         try {
-          const response = await axios.get(`http://localhost:3000/api/cartera/${id}`);
-          setCartera(response.data.cartera);
+          const response = await axios.get(`${process.env.REACT_APP_URL_BASE}/cartera/${id}`,{
+            headers : {
+                'Content-Type' : 'application/json',
+                'Accept' : 'application/json',
+                'Authorization': 'Bearer '+getToken(),
+            },
+          });
+          setCartera(response.data);
         } catch (error) {
+          console.log(error);
           if(error.response.status === 404){
             setCartera(null);
           }else if(error.response.status === 500){
@@ -36,15 +44,29 @@ export const Retiros = () => {
         return dateString;
     };
     const retirarfn = async ()=>{
-        
         try {
-            const  response = await axios.post('http://localhost:3000/api/cartera/withdrawal',{
-                id: cartera._id,
-                cantidad: retirar,
-                mensaje: mensaje,
-                fecha: getFecha()
+            let data;
+                if(mensaje == ""){
+                    data = {
+                        id: cartera.id,
+                        cantidad: parseInt(retirar),
+                    }
+                }else{
+                    data = {
+                        id: cartera.id,
+                        cantidad: parseInt(retirar),
+                        mensaje: mensaje,
+                    }
+                }
+            const  response = await axios.put(`${process.env.REACT_APP_URL_BASE}/cartera/withdrawal`,data,{
+                headers : {
+                    'Content-Type' : 'application/json',
+                    'Accept' : 'application/json',
+                    'Authorization': 'Bearer '+getToken(),
+                    'X-Requested-With' : 'XMLHttpRequest'
+                },
             });
-            cartera.cantidad = response.data.cantidad;
+            cartera.cantidad = response.data.cartera.cantidad;
             formValue.retirar = '';
             formValue.mensaje = '';
             setOpen({open:true, message: "Retiro exitoso",severity:"success"});
@@ -75,7 +97,7 @@ export const Retiros = () => {
             {
                 cartera != null 
                 ? <>
-                    <h1>Cartera : {cartera.nombre}</h1>
+                    <h1>Cartera : {cartera.name}</h1>
                     <h2>Saldo : {Intl.NumberFormat().format(cartera.cantidad)}</h2>
                 </>
                 : 'no hay carteras '

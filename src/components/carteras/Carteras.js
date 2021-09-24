@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from "react";
 import {CardCartera} from '../card/Card';
+import {useHistory} from 'react-router-dom';
 
 import { Grid } from "@material-ui/core";
 import axios from "axios";
 import { getToken } from "../../utils/helper";
 
 export const Carteras = () => {
+  const history = useHistory();  
   const [carteras, setCarteras] = useState([]);
+  if(sessionStorage.getItem("user") === null) {
+    History.replace('/login');
+  }
   const {id} = JSON.parse(sessionStorage.getItem("user"));
   console.log(id)
 
