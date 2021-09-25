@@ -3,10 +3,10 @@ import React from 'react'
 
 export const HistorialItem = ({transaccion}) => {
     let severity;
-    if(transaccion.operacion === 'Retiro'){
+    if(transaccion.operacion === 'retiro'){
         severity = 'error'
-    }else if(transaccion.operacion === 'Deposito'){
-        severity = 'info'
+    }else if(transaccion.operacion === 'deposito'){
+        severity = 'success'
 
     }
     return (

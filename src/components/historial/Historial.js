@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router';
+import { getToken } from '../../utils/helper';
 import {HistorialItem} from './HistorialItem';
 export const Historial = () => {
 
@@ -8,11 +9,18 @@ export const Historial = () => {
     const [historial, setHistorial] = useState([]);
     const getHistorial = async ()=>{
       try {
-        const response = await axios.get('http://localhost:3000/api/historial/'+id);
+        const response = await axios.get(`${process.env.REACT_APP_URL_BASE}/historial/`+id,{
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+getToken(),
+            'X-Requested-With' : 'XMLHttpRequest'
+        }
+        });
         console.log(response.data);
 
         setHistorial(response.data.historial);
       } catch (error) {
+        console.log(error)
         if(error.response.status === 404){
           setHistorial([]);
         }else if(error.response.status === 500){
@@ -28,7 +36,7 @@ export const Historial = () => {
         <>
            {
                historial 
-               ? historial.map((transaccion)=> <HistorialItem  key={transaccion._id} transaccion={transaccion} />)
+               ? historial.map((transaccion)=> <HistorialItem  key={transaccion.id} transaccion={transaccion} />)
                : 'No hay historial D:'
            }
             
